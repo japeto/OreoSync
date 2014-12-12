@@ -1,42 +1,29 @@
-# Welcome
+# OreoP2P #
 
-Welcome to your wiki! This is the default page we've installed for your convenience. Go ahead and edit it.
+is a P2P Application used to transfer files via the oreo protocol. OreoP2P is written in C. In addition to downloading data linked to .oreo files, OreoP2P allows users to publish and share files. 
 
-## Wiki features
+This a project by **Fundamentos de Redes** course at **Universidad del Valle**
 
-This wiki uses the [Markdown](http://daringfireball.net/projects/markdown/) syntax.
-
-The wiki itself is actually a git repository, which means you can clone it, edit it locally/offline, add images or any other file type, and push it back to us. It will be live immediately.
-
-Go ahead and try:
-
-```
-$ git clone https://japeto@bitbucket.org/japeto/oreosync.git/wiki
-```
-
-Wiki pages are normal files, with the .md extension. You can edit them locally, as well as creating new ones.
-
-## Syntax highlighting
+### Requierements 
+ The Oreo is written in [C](http://es.wikipedia.org/wiki/C_(lenguaje_de_programaci%C3%B3n))  your need 
+_a compiler_ [GNU compiler](http://es.wikipedia.org/wiki/GNU_Compiler_Collection) in **Linux** environment
 
 
-You can also highlight snippets of text (we use the excellent [Pygments][] library).
+### Run & Test
 
-[Pygments]: http://pygments.org/
-
-
-Here's an example of some Python code:
-
-```
-#!python
-
-def wiki_rocks(text):
-    formatter = lambda t: "funky"+t
-    return formatter(text)
-```
+compile :
+* gcc -o oreop2p  # # # # # # # # #  -lphthread
 
 
-You can check out the source of this page to see how that's done, and make sure to bookmark [the vast library of Pygment lexers][lexers], we accept the 'short name' or the 'mimetype' of anything in there.
-[lexers]: http://pygments.org/docs/lexers/
+run :
+* ./oreop2p
+
+### Team Contact
+
+Jefferson Peña Torres                    (**JAPeTo**)[*Jeffersonamado@gmail.com*](mailto: jeffersonamado@gmail.com)
 
 
-Have fun!
+![universidad del Valle](http://www.univalle.edu.co/imagenes/logounivalle261x31.gif)
+
+
+2014

@@ -1,0 +1,8 @@
+echo "SEEK [test.txt]" | nc localhost 8907
+echo "SEEK [test.txt perro.txt]" | nc localhost 8907
+echo "SEEK [test.txt load.png msk.mp3]" | nc localhost 8907
+
+echo "SENDME 5a494a360f7008ed6f336959f90dacd0" | nc localhost 8907
+echo "SENDME 1679091c5a880faf6fb5e6087eb1b2dc" | nc localhost 8907
+echo "SENDME d82839a0e5f3f61d686c872e83258f07" | nc localhost 8907
+

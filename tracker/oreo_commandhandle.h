@@ -1,98 +1,160 @@
 /**
  * @file oreo_commandhandle.h
- * @author JAPETO - jeffersonamado@gmail.com
+ * @author Jefferson Amado Pe&ntilde;a Torres,(jeffersonamado@gmail.com),JAPeTo
  * @date 21 Nov 2014
- * @brief File containing the socket handling, allow acept and monitor a connection to oreo tracker
- * @see 
+ * @brief This file containing the command handle make enum by commands
+ * types, this validate the command on the current connection,
+ * transform commmands from an integer or a string.
  */
 #ifndef OREO_COMMANDHANDLE_H
 #define OREO_COMMANDHANDLE_H
-
+/**
+ * @name    Command handle actions
+ * @brief   This class manage commands and verify whether
+ * a command is <b>GETFILE</b>, <b>SEEK</b>,
+ *  <b>UNKNOWN</b>, <b>SENDME</b>
+ * @ingroup handle
+ *
+ * This API provides certain actions by command handle.
+ *
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
 
 #include "oreo_globals.h"
-
-
 /**
- * @brief This enum contains commands in comunication 
+ * @brief When a peer requests a service,
+ * this has a type and data.
  */
 typedef enum {
-	ANNOUNCE, 	/**< <b>ANNOUNCE<b/> with this commnad the peer say has this file*/
-	LOOK, 		/**< <b>LOOK<b/> with this commnad the peer say all look this file*/
-	GETFILE,	/**< <b>GETFILE<b/> with this commnad the peer say sendme this file*/
-	GET,	        /**< <b>GET<b/> with this commnad the peer say sendme this file*/
-	UPDATE,		/**< <b>IPDATE<b/> with this commnad the peer say upadte mi state or my list*/
-	SENDCHUNK,	/**< <b>SENDCHUNK<b/> with this commnad the peer say nothing */
-	UNKNOWN		/**< <b>UNKNOWN<b/> with this commnad the peer say nothing */
-} commandtype;
+        SEEK_COMMAND, 	 /*!< With this commnad the peer say Send me chunk*/
+        SENDME_COMMAND,  /*!< With this commnad the peer say nothing*/
+        GETFILE_COMMAND, /*!< With this commnad the peer say sendme this file*/
+        REQUEST_COMMAND, /*!< */
+        HAS_COMMAND,     /*!< */
+        UPDATE,          /*!< With this commnad the peer say upadte mi state or my list*/
+        UNKNOWN, 	 /*!< With this commnad the peer say nothing*/
+} CommandType;
 /**
- * @brief This typestruct contains a command send in connection
+ * @brief A aCommand allows <b>OreoSync</b>
+ * to send request in specified format
+ * they are flexible and serve a variety
+ * of purposes
+ * @see CommandType
  */
-typedef struct 
-{
-  commandtype type; 	/**< type by command */
-  char* data;		/**< data */
-  
-} command;
+typedef struct aCommand{
+  CommandType type; 	/*!< <b>type</b> defines a response
+                        *to specified command
+                        *@see CommandType */
+  char* payload;	/*!< <b>command</b> the body of the
+                        *command must be well-formed.
+                        * This content of message */
+
+} aCommand;
 
 /**
- * constructor
- * @param dataSize size of command 
+ * @brief This method allow make a new
+ * aCommand object
+ *
+ * @param [size] size  The payload
+ * or message content
+ *
+ * @return A new aCommand empty
+ * @retval aCommand empty aCommand
+ * @retval NULL  Oops, did something.
+ *
+ *
+ * Example Usage:
+ * @code
+ *    aCommand command = new aCommand(DATA); //Size od payload
+ * @endcode
  */
-command* newCommand(int dataSize);
+aCommand* newCommand(int size);
 /**
- * delete a command and free memory
- * @param com command to delete
+ * @brief Deallocate memory allocate by this aCommand
+ * @param [a_command] This is aCommand to delete
  */
-void deleteCommand(command* com);
+void deleteCommand(aCommand* a_command);
 /**
- * With this method verify whether a command is announce 
- * @param com 
- * @param buffer 
- * @return 1 whether is announce 0 otherwise 
+ * @brief With this method verify whether a command is announce
+ * @param [a_command] This a Command that contains information
+ * @param [payload] This is the information
+ * @return indicates whether aCommand is Announce or not
+ * @retval 0 This aCommand is type <b>UNKNOWN</b>
+ * @retval 1 This aCommand is <b>SEEK</b> type @see CommandType
  */
-int isAnnounce(command* com, char* data);
+int isSeek(aCommand* a_command, char* payload);
 /**
- * With this method verify whether a command is look 
- * @param com 
- * @param buffer 
- * @return 1 whether is announce 0 otherwise
+ * @brief With this method verify whether a command is sendme
+ * @param [a_command] This a Command that contains information
+ * @param [payload] This is the information
+ * @return indicates whether aCommand is Announce or not
+ * @retval 0 This aCommand is type <b>UNKNOWN</b>
+ * @retval 1 This aCommand is <b>SENDME</b> type @see CommandType
  */
-int isLook(command* com, char* data);
+int isSendme(aCommand* a_command, char* payload);
 /**
- * With this method verify whether a command is getfile 
- * @param com 
- * @param buffer 
- * @return 1 whether is announce 0 otherwise
+ * @brief With this method verify whether a command is getfile
+ * @param [a_command] This a Command that contains information
+ * @param [payload] This is the information
+ * @return indicates whether aCommand is Announce or not
+ * @retval 0 This aCommand is type <b>UNKNOWN</b>
+ * @retval 1 This aCommand is <b>GETFILE</b> type @see CommandType
  */
-int isGetfile(command* com, char* data);
+int isGetfile(aCommand* a_command, char* payload);
 /**
- * With this method verify whether a command is update 
- * @param com 
- * @param buffer 
- * @return 1 whether is announce 0 otherwise
+ * @brief With this method verify whether a command is announce
+ * @param [a_command] This a Command that contains information
+ * @param [payload] This is the information
+ * @return indicates whether aCommand is Announce or not
+ * @retval 0 This aCommand is type <b>UNKNOWN</b>
+ * @retval 1 This aCommand is <b>ANNOUNCE</b> type @see CommandType
  */
-int isUpdate(command* com, char* data);
+int isAnnounce(aCommand* a_command, char* payload);
 /**
- * With this method is verify whether a command is known 
- * @param com 
- * @param buffer 
- * @return 1 whether is known command 0 otherwise
+ * @brief With this method verify whether a command is update
+ * @param [a_command] This a Command that contains information
+ * @param [payload] This is the information
+ * @return indicates whether aCommand is Announce or not
+ * @retval 0 This aCommand is type <b>UNKNOWN</b>
+ * @retval 1 This aCommand is <b>UPDATE</b> type @see CommandType
  */
-int whatCommand(command* com, char* data);
+int isUpdate(aCommand* a_command, char* payload);
 /**
- * With this method is obtained the number identifier by a command
- * @param com 
- * @param buffer 
+ * @brief With this method is verify
+ * whether a command is known or not
+ * @param [a_commmand] A command object
+ * @param [data] Information transfer from host
+ *
+ * @return known
+ * @retval 1 This aCommand is <b>KNOWN</b> @see CommandType
+ * @retval 0 This aCommand is type <b>UNKNOWN</b>
+ *
  */
-int getCommandFromString(char* cmd);
+int what_command(aCommand* a_commmand, char* data);
 /**
- * With this method is obtained the char* identifier by a command
- * @param type 
+ * @brief This method return the identifier by type of aCommand
+ * @param [command] A command object string format
+ *
+ * @return
+ * @retval 1 This aCommand is <b>SEEK_COMMAND</b> type
+ * @retval 2 This aCommand is <b>SENDME_COMMAND</b> type
+ * @retval 3 This aCommand is <b>GETFILE</b> type
+ *
  */
-char* getCommandFromInt(int type);
+int command_from_string(char* command);
+/**
+ * @brief This method return the string identifier by type of aCommand
+ * @param [type] identifier by type
+ *
+ * @return
+ * @retval SEEK_COMMAND This aCommand is <b>1</b> type
+ * @retval SENDME_COMMAND This aCommand is <b>2</b> type
+ * @retval GETFILE_COMMAND This aCommand is <b>3</b> type
+ *
+ */
+char* command_from_int(int type);
 
 #endif /*oreo_trackersockethandle.h*/

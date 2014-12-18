@@ -1,5 +1,4 @@
-/**
- * @file oreo_commandhandle.c
+/* @file oreo_commandhandle.c
  * @author JAPETO - jeffersonamado@gmail.com
  * @date 21 Nov 2014
  * @brief File containing the socket handling, allow acept and monitor a connection to oreo tracker
@@ -8,109 +7,109 @@
 #include "oreo_commandhandle.h"
 
 
-command* newCommand(int dataSize){
-	command* c =  malloc(sizeof(command));
-	c->type = UNKNOWN;
-	c->data = malloc(sizeof(char) * dataSize);
-	return c;
+aCommand* newCommand(int dataSize){
+	aCommand* a_command =  malloc(sizeof(aCommand));
+	a_command->type = UNKNOWN;
+	a_command->payload = malloc(sizeof(char) * dataSize);
+	return a_command;
 }
-void deleteCommand(command* c){
-	free(c->data);
-	free(c);
-}
-int isAnnounce(command* com, char* data){
-        int start = strcspn(data, " ")+1;
-        int end = strlen(data);
-        strncpy(com->data, data+start, end);
-        debugMessage("trackercommandhandle: handle ANNOUNCE command\n");
-        return 1;
-}
-int isLook(command* com, char* data){
-        int start = strcspn(data, " ")+1;
-        int end = strlen(data);
-        strncpy(com->data, data+start, end);
-        debugMessage("trackercommandhandle: handle LOOK command\n");
-        return 1;
-}
-int isGetfile(command* com, char* data){
-        int start = strcspn(data, " ")+1;
-        int end = strlen(data);
-        strncpy(com->data, data+start, end);
-        //~ debugMessage("trackercommandhandle: handle GETFILE %s command\n",com->data);
-        return 1;
-}
-int isUpdate(command* com, char* data){
-
-        int start = strcspn(data, " ")+1;
-        int end = strlen(data);
-        strncpy(com->data, data+start, end);
-        debugMessage("trackercommandhandle: handle UPDATE command\n");
-        return 1;
-}
-int whatCommand(command* com, char* data){
-	assert(com != NULL);
-	assert(data != NULL);
-	int commandSize = strcspn(data, " ");
-        //~ debugMessage("trackercommandhandle:command size: %d\n", commandSize);
-	char cmd[64]; 						//OJO
-	if(commandSize == BUFFER_SIZE){
-		com->type = UNKNOWN;
-		return 0;
-	}else{
-                strncpy(cmd,data,commandSize);
-                com->type = getCommandFromString(cmd);
-                //~ debugMessage("trackercommandhandle:is known command id type ( %d ) \n",com->type);
-                //~ debugMessage("trackercommandhandle:is known command type ( %s ) \n",cmd);
-                return 1;
-	}
+void deleteCommand(aCommand* a_command){
+	free(a_command->payload);
+	free(a_command);
 }
 
-int getCommandFromString(char* cmd){
-	if (strstr(cmd,"announce") != NULL){
-		//~ debugMessage("trackercommandhandle:command %s with identifier is %d\n",cmd,ANNOUNCE);
-		return ANNOUNCE;
-	}else if (strstr(cmd,"look") != NULL){
-                //~ debugMessage("trackercommandhandle:command %s with identifier is %d\n",cmd,LOOK);
-		return LOOK;
-	}else if (strstr(cmd,"getfile") != NULL){
-                //~ debugMessage("trackercommandhandle:command %s with identifier is %d\n",cmd,GETFILE);
-		return GETFILE;
-	}else if (strstr(cmd,"GET") != NULL){
-                //~ debugMessage("trackercommandhandle:command %s with identifier is %d\n",cmd,GET);
-		return GET;
-                
-	}else if (strstr(cmd,"update") != NULL){
-                //~ debugMessage("trackercommandhandle:command %s with identifier is %d\n",cmd,UPDATE);
-		return UPDATE;
+int isSeek(aCommand* a_command, char* payload){
+    int start = strcspn(payload, " ")+1;
+    int end = strlen(payload);
+    int response = strlen(strncpy(a_command->payload, payload+start, end));
+    return response;
+}
+int isSendme(aCommand* a_command, char* payload){
+        int start = strcspn(payload, " ")+1;
+        int end = strlen(payload);
+        int response = strlen(strncpy(a_command->payload, payload+start, end));
+        return response;
+}
+
+//~ ################
+
+int isGetfile(aCommand* a_command, char* payload){
+        MSG("\tcommandhandle: handle %s%s%s coomand \n",ANSI_COLOR_BLUE,a_command->type,ANSI_COLOR_RESET);
+        int start = strcspn(payload, " ")+1;
+        int end = strlen(payload);
+        int response = strlen(strncpy(a_command->payload, payload+start, end));
+        return response;
+}
+int isUpdate(aCommand* a_command, char* payload){
+        MSG("\tcommandhandle: handle %s%s%s coomand \n",ANSI_COLOR_BLUE,a_command->type,ANSI_COLOR_RESET);
+        int start = strcspn(payload, " ")+1;
+        int end = strlen(payload);
+        int response = strlen(strncpy(a_command->payload, payload+start, end));
+        return response;
+}
+int isAnnounce(aCommand* a_command, char* payload){
+        MSG("\tcommandhandle: handle %s%s%s coomand \n",ANSI_COLOR_BLUE,a_command->type,ANSI_COLOR_RESET);
+        int start = strcspn(payload, " ")+1;
+        int end = strlen(payload);
+        int response = strlen(strncpy(a_command->payload, payload+start, end));
+        return response;
+}
+int what_command(aCommand* a_command, char* payload){
+    assert(a_command != NULL);
+    assert(payload != NULL);
+    int commandSize = strcspn(payload, " ");
+    if(commandSize == BUFFER_SIZE){
+	a_command->type = UNKNOWN;
+	return 0;
+    }else{
+	strncpy(a_command,payload,commandSize);
+	a_command->type = command_from_string(a_command);
+	return 1;
+    }
+}
+
+int command_from_string(char* command){
+	if (strstr(command,"SEEK") != NULL){
+		return SEEK_COMMAND;
+
+	}else if (strstr(command,"SENDME") != NULL){
+		return SENDME_COMMAND;
+	//~ }else if (strstr(command,"getfile") != NULL){
+                //~ DEBUG_MSG("trackercommandhandle:command %s with identifier is %d\n",command,GETFILE);
+		//~ return GETFILE;
+	//~ }else if (strstr(command,"GET") != NULL){
+                //~ DEBUG_MSG("trackercommandhandle:command %s with identifier is %d\n",command,GET);
+		//~ return GET;
+	//~ }else if (strstr(command,"update") != NULL){
+                //~ DEBUG_MSG("trackercommandhandle:command %s with identifier is %d\n",command,UPDATE);
+		//~ return UPDATE;
 	}else{
-                //~ debugMessage("trackercommandhandle:command %s with identifier command is %d\n",cmd,UNKNOWN);
+                DEBUG_MSG("trackercommandhandle:command %s with identifier command is %d\n",command,UNKNOWN);
 		return UNKNOWN;
 	}
 }
-char* getCommandFromInt(int type){
+char* command_from_int(int type){
 	switch(type){
-		case ANNOUNCE:
-			//~ debugMessage("trackercommandhandle:command %d with type %s\n",ANNOUNCE,"anounce");
-			return "announce";
+		case SEEK_COMMAND:
+			return "SEEK";
 			break;
-		case LOOK:
-			//~ debugMessage("trackercommandhandle:command %d with type %s\n",LOOK,"look");
-			return "look";
+		case SENDME_COMMAND:
+			return "SENDME";
 			break;
-		case GETFILE:
-			//~ debugMessage("trackercommandhandle:command %d with type %s\n",GETFILE,"getfile");
-			return "getfile";
-			break;
-		case GET:
-			//~ debugMessage("trackercommandhandle:command %d with type %s\n",GET,"get");
-			return "get";
-			break;
-		case UPDATE:
-			//~ debugMessage("trackercommandhandle:command %d with type %s\n",UPDATE,"update");
-			return "update";
-			break;
+		//~ case GETFILE:
+			//~ DEBUG_MSG("trackercommandhandle:command %d with type %s\n",GETFILE,"getfile");
+			//~ return "getfile";
+			//~ break;
+		//~ case GET:
+			//~ DEBUG_MSG("trackercommandhandle:command %d with type %s\n",GET,"get");
+			//~ return "get";
+			//~ break;
+		//~ case UPDATE:
+			//~ DEBUG_MSG("trackercommandhandle:command %d with type %s\n",UPDATE,"update");
+			//~ return "update";
+			//~ break;
 		case UNKNOWN:
-			//~ debugMessage("trackercommandhandle:command %d with type %s\n",UNKNOWN,"unknown");
+			DEBUG_MSG("trackercommandhandle:command %d with type %s\n",UNKNOWN,"unknown");
 			return "unknown";
 			break;
 		default:

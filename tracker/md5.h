@@ -1,9 +1,8 @@
-/*
- **********************************************************************
- ** md5.h -- Header file for implementation of MD5                   **
- ** RSA Data Security, Inc. MD5 Message Digest Algorithm             **
- ** Created: 2/17/90 RLR                                             **
- ** Revised: 12/27/90 SRD,AJ,BSK,JT Reference C version              **
+/**
+ ** @file md5.h -- Header file for implementation of MD5                   **
+ ** @brief RSA Data Security, Inc. MD5 Message Digest Algorithm             **
+ ** @date Created: 2/17/90 RLR                                             **
+ ** @details Revised: 12/27/90 SRD,AJ,BSK,JT Reference C version              **
  ** Revised (for MD5): RLR 4/27/91                                   **
  **   -- G modified to have y&~z instead of y&z                      **
  **   -- FF, GG, HH modified to add in last register done            **
@@ -37,19 +36,39 @@
  **********************************************************************
  */
 
-/* typedef a 32 bit type */
+/**
+ * @brief typedef a 32 bit type 
+ */
 typedef unsigned long int UINT4;
 
-/* Data structure for MD5 (Message Digest) computation */
+/** 
+ *@brief Data structure for MD5 (Message Digest) computation 
+ **/
 typedef struct {
-  UINT4 i[2];                   /* number of _bits_ handled mod 2^64 */
-  UINT4 buf[4];                                    /* scratch buffer */
-  unsigned char in[64];                              /* input buffer */
-  unsigned char digest[16];     /* actual digest after MD5Final call */
+  UINT4 i[2];                   /*!< number of _bits_ handled mod 2^64 */
+  UINT4 buf[4];                 /*!< scratch buffer */
+  unsigned char in[64];         /*!< input buffer */
+  unsigned char digest[16];     /*!< actual digest after MD5Final call */
 } MD5_CTX;
-
+/**
+ *  @brief The MD5Init procedure performs the MD5Init algorithm, as specified in
+ */
 void MD5Init ();
+/**
+ * Example Usage:
+ * @code
+ *  procedure MD5Update(
+ *   var context: MD5_CTX,
+ *   input: sequence of BYTE, 
+ *   inputLen: integer)
+ * @endcode
+ * @brief MD5Update procedure performs the MD5Update algorithm, as specified in
+ */
 void MD5Update ();
+/**
+ * @brief MD5Final(var context: MD5_CTX)
+ * The MD5Final procedure performs the MD5Final algorithm, as specified in 
+ */
 void MD5Final ();
 
 /*
